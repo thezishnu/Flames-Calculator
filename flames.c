@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <windows.h>
 
 int countRemaining(char a[], char b[]) {
     int i, j, count = 0;
@@ -12,8 +13,10 @@ int countRemaining(char a[], char b[]) {
             }
         }
     }
-    for (i = 0; a[i]; i++) if (a[i] != '*' && a[i] != ' ') count++;
-    for (j = 0; b[j]; j++) if (b[j] != '*' && b[j] != ' ') count++;
+    for (i = 0; a[i]; i++)
+        if (a[i] != '*' && a[i] != ' ') count++;
+    for (j = 0; b[j]; j++)
+        if (b[j] != '*' && b[j] != ' ') count++;
     return count;
 }
 
@@ -30,29 +33,46 @@ char flamesResult(int count) {
 }
 
 int main() {
+    AllocConsole();
+    freopen("CONIN$", "r", stdin);
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+
     char n1[100], n2[100];
-    printf("Enter first name: ");
-    fgets(n1, sizeof(n1), stdin);
-    printf("Enter second name: ");
-    fgets(n2, sizeof(n2), stdin);
+    char choice;
 
-    n1[strcspn(n1, "\n")] = n2[strcspn(n2, "\n")] = '\0';
+    do {
+        printf("\nEnter first name: ");
+        fgets(n1, sizeof(n1), stdin);
 
-    // convert to lowercase
-    for (int i = 0; n1[i]; i++) n1[i] = tolower(n1[i]);
-    for (int i = 0; n2[i]; i++) n2[i] = tolower(n2[i]);
+        printf("Enter second name: ");
+        fgets(n2, sizeof(n2), stdin);
 
-    int count = countRemaining(n1, n2);
-    char r = flamesResult(count);
+        n1[strcspn(n1, "\n")] = '\0';
+        n2[strcspn(n2, "\n")] = '\0';
 
-    printf("\nResult: ");
-    switch (r) {
-        case 'F': puts("Friends"); break;
-        case 'L': puts("Love"); break;
-        case 'A': puts("Attraction"); break;
-        case 'M': puts("Marriage"); break;
-        case 'E': puts("Enemy"); break;
-        case 'S': puts("Sister"); break;
-    }
+        for (int i = 0; n1[i]; i++) n1[i] = tolower(n1[i]);
+        for (int i = 0; n2[i]; i++) n2[i] = tolower(n2[i]);
+
+        int count = countRemaining(n1, n2);
+        char r = flamesResult(count);
+
+        printf("\nResult: ");
+        switch (r) {
+            case 'F': puts("Friends"); break;
+            case 'L': puts("Love"); break;
+            case 'A': puts("Attraction"); break;
+            case 'M': puts("Marriage"); break;
+            case 'E': puts("Enemy"); break;
+            case 'S': puts("Sister"); break;
+        }
+
+        printf("\nDo you want to calculate again? (y/n): ");
+        scanf(" %c", &choice);
+        getchar();  // clear input buffer
+
+    } while (choice == 'y' || choice == 'Y');
+
+    system("pause");
     return 0;
 }
